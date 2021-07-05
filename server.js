@@ -5,8 +5,7 @@ import { User } from "./models/pizzaTown.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const url =
-  "mongodb+srv://deepakkumard:password1234@cluster0.pkrwz.mongodb.net/pizzaTown";
+const url = process.env.MONGODB_URI || "mongodb://localhost/pizzaTown";
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 const con = mongoose.connection;
