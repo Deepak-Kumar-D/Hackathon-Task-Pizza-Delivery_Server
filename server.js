@@ -14,14 +14,27 @@ con.on("open", () => console.log("MongoDB is connected!"));
 app.use(express.json());
 
 app.get("/", (request, response) => {
-  console.log("Deepak it's done!");
   response.send("Welcome to node app!");
 });
 
+// Find users
 app.get("/users", async (request, response) => {
   const users = await User.find();
-  console.log(users);
   response.send(users);
+});
+
+//Add a user
+app.post("/users", async (request, response) => {
+  const newUser = request.body;
+  console.log(newUser);
+
+  const user = new User(newUser);
+  try {
+    const cust = await user.save();
+    response.send(cust);
+  } catch (err) {
+    response.send(err);
+  }
 });
 
 app.listen(PORT, () => {
