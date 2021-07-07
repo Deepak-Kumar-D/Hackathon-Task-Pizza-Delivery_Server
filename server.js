@@ -1,12 +1,13 @@
 import express from "express";
 import mongoose from "mongoose";
 import { User } from "./models/pizzaTown.js";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 const url = process.env.MONGODB_URI || "mongodb://localhost/pizzaTown";
-
+app.use(cors());
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 const con = mongoose.connection;
 con.on("open", () => console.log("MongoDB is connected!"));
