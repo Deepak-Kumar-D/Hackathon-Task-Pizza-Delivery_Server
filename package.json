@@ -22,8 +22,8 @@
   "devDependencies": {
     "nodemon": "^2.0.9"
   },
-  "engine": {
-    "node": "^16.4.0",
-    "npm": "^7.18.1"
+  "engines": {
+    "node": "16.4.0",
+    "npm": "7.18.1"
   }
 }
