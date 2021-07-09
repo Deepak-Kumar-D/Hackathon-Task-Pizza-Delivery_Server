@@ -2,6 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import { User } from "./models/pizzaTown.js";
 import cors from "cors";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -22,20 +24,67 @@ app.get("/", (request, response) => {
 // Find users
 app.get("/users", async (request, response) => {
   const users = await User.find();
+
   response.send(users);
 });
 
 //Add a user
-app.post("/users", async (request, response) => {
-  const newUser = request.body;
-  console.log(newUser);
+app.post("/register", async (request, response) => {
+  const { name, email, phone, address, password } = request.body;
 
-  const user = new User(newUser);
+  if ((!name, !email, !phone, !address, !password)) {
+    return response
+      .status(422)
+      .json({ error: "Please leave the field empty!" });
+  }
+
   try {
-    const cust = await user.save();
-    response.send(cust);
+    const userExist = await User.findOne({ email: email });
+
+    if (userExist) {
+      return response.status(422).json({ error: "Email-Id already exists!" });
+    }
+
+    const user = new User({ name, email, phone, address, password });
+    await user.save();
+
+    response.status(201).json({ error: "User Registered Successfully!" });
   } catch (err) {
     response.send(err);
+  }
+});
+
+//Login
+app.post("/login", async (request, response) => {
+  try {
+    const { email, password } = request.body;
+
+    if (!email || !password) {
+      return response.status(400).json({ error: "Please fill the fields!" });
+    }
+
+    const userLogin = await User.findOne({ email: email });
+
+    if (userLogin) {
+      const isMatch = await bcrypt.compare(password, userLogin.password);
+
+      const token = await userLogin.generateAuthToken();
+
+      response.cookie("jwttoken", token, {
+        expires: new Date(Date.now() + 2592000000),
+        httpOnly: true,
+      });
+
+      if (!isMatch) {
+        response.status(400).json({ error: "Invalid Credentials!" });
+      } else {
+        response.json({ message: "User Login Success!" });
+      }
+    } else {
+      response.status(400).json({ error: "Invalid Credentials!" });
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
