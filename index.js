@@ -4,18 +4,24 @@ import { User } from "./models/pizzaTown.js";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
+
+var corsOptions = {
+  origin: true,
+  credentials: true  
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
 const url = process.env.MONGODB_URI || "mongodb://localhost/pizzaTown";
-app.use(cors());
+app.use(cors(corsOptions));
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 const con = mongoose.connection;
 con.on("open", () => console.log("MongoDB is connected!"));
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/", (request, response) => {
   response.send("Welcome to node app!");
@@ -78,7 +84,7 @@ app.post("/login", async (request, response) => {
       if (!isMatch) {
         response.status(400).json({ error: "Invalid Credentials!" });
       } else {
-        response.json({ message: "User Login Success!" });
+        response.json({ message: "User Login Success!" })
       }
     } else {
       response.status(400).json({ error: "Invalid Credentials!" });
