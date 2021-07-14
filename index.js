@@ -3,13 +3,13 @@ import mongoose from "mongoose";
 import { User } from "./models/pizzaTown.js";
 import cors from "cors";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import { Authenticate } from "./middleware/authenticate.js";
 
 var corsOptions = {
   origin: true,
-  credentials: true  
-}
+  credentials: true,
+};
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -41,7 +41,7 @@ app.post("/register", async (request, response) => {
   if ((!name, !email, !phone, !address, !password)) {
     return response
       .status(422)
-      .json({ error: "Please leave the field empty!" });
+      .json({ error: "Please don't leave the field empty!" });
   }
 
   try {
@@ -54,7 +54,7 @@ app.post("/register", async (request, response) => {
     const user = new User({ name, email, phone, address, password });
     await user.save();
 
-    response.status(201).json({ error: "User Registered Successfully!" });
+    response.status(201).json({ message: "User Registered Successfully!" });
   } catch (err) {
     response.send(err);
   }
@@ -84,7 +84,7 @@ app.post("/login", async (request, response) => {
       if (!isMatch) {
         response.status(400).json({ error: "Invalid Credentials!" });
       } else {
-        response.json({ message: "User Login Success!" })
+        response.json({ message: "User Login Success!" });
       }
     } else {
       response.status(400).json({ error: "Invalid Credentials!" });
@@ -92,6 +92,12 @@ app.post("/login", async (request, response) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+//dashboard
+app.get("/dashboard", Authenticate, (request, response) => {
+  console.log("Hello to dashboard");
+  response.send();
 });
 
 app.listen(PORT, () => {
