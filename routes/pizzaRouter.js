@@ -57,6 +57,7 @@ pizzaRouter.post("/login", async (request, response) => {
       response.cookie("jwttoken", token, {
         expires: new Date(Date.now() + 2592000000),
         httpOnly: true,
+        sameSite: "lax",
       });
 
       if (!isMatch) {
