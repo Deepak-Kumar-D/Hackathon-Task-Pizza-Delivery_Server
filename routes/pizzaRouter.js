@@ -59,6 +59,7 @@ pizzaRouter.post("/login", async (request, response) => {
         httpOnly: true,
         secure: true,
         sameSite: "strict",
+        signed: "true",
       });
 
       if (!isMatch) {
