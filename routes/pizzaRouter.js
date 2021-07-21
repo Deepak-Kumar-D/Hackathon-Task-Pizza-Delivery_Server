@@ -58,8 +58,7 @@ pizzaRouter.post("/login", async (request, response) => {
         expires: new Date(Date.now() + 2592000000),
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
-        signed: "true",
+        sameSite: "none",
       });
 
       if (!isMatch) {
