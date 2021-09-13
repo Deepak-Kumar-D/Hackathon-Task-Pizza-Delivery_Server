@@ -1,5 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { User } from "../models/pizzaTown.js";
 import { Authenticate } from "../middleware/authenticate.js";
@@ -24,9 +25,9 @@ pizzaRouter.post("/register", async (request, response) => {
   }
 
   try {
-    const userExist = await User.findOne({ email: email });
+    const isExist = await User.findOne({ email: email });
 
-    if (userExist) {
+    if (isExist) {
       return response.status(422).json({ error: "Email-Id already exists!" });
     }
 
