@@ -32,7 +32,7 @@ pizzaRouter.post("/register", async (request, response) => {
 
     let token = jwt.sign({ _id: User._id }, process.env.SECRET_KEY);
 
-    const newUser = new User({ name, email, phone, address, password });
+    const newUser = new User({ name, email, phone, address, password, token });
     await newUser.save();
 
     const sendMail = (ele) => {
@@ -48,7 +48,7 @@ pizzaRouter.post("/register", async (request, response) => {
         from: `"PIZZA TOWN"` + "<" + process.env.MAIL_USERNAME + ">",
         to: { name: ele.name, address: ele.email },
         subject: "Email Verification",
-        html: `<p>Hi ${ele.name},</p>\n<h3>Click <a href="localhost:3000/verify/${ele.token}">here</a> to verify your account.</h3>\n
+        html: `<p>Hi ${ele.name},</p>\n<h3>Click <a href="http://localhost:3000/verify/${ele.token}">here</a> to verify your account.</h3>\n
         <p>Regards,</p>\n
         <p>Pizza Town</p>\n
         <p>India</p>`,
