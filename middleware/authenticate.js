@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { User } from "../models/pizzaTown.js";
+import { User } from "../models/users.js";
 
 const Authenticate = async (request, response, next) => {
   try {
