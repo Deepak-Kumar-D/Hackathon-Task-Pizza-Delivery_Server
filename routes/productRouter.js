@@ -1,6 +1,7 @@
 import express from "express";
 import { Product } from "../models/product.js";
 import { Admin } from "../models/admin.js";
+import { User } from "../models/users.js";
 import jwt from "jsonwebtoken";
 
 const productRouter = express.Router();
@@ -20,6 +21,25 @@ productRouter.get("/products", async (request, response) => {
       response.status(200).json("Stock is empty.");
     } else {
       response.status(200).json({ products: products, admin: admin });
+    }
+  }
+});
+
+productRouter.get("/user-products", async (request, response) => {
+  const token = request.headers["x-access-token"];
+
+  const decode = jwt.verify(token, process.env.SECRET_KEY);
+  const id = decode._id;
+
+  const user = await User.findOne({ _id: id });
+
+  if (user) {
+    const products = await Product.find();
+
+    if (products.length === 0) {
+      response.status(200).json("Stock is empty.");
+    } else {
+      response.status(200).json({ products: products });
     }
   }
 });

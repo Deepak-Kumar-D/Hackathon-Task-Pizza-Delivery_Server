@@ -137,14 +137,4 @@ userRouter.get("/dashboard", async (request, response) => {
   response.status(200);
 });
 
-//Logout
-userRouter.get("/logout", async (request, response) => {
-  // const token = localStorage.getItem("token");
-  console.log("token");
-  // const isToken = request.cookies.jwttoken;
-  // await Token.findOneAndRemove({ token: isToken });
-  // response.clearCookie("jwttoken", { path: "token" });
-  // response.status(200).json("User logged out!");
-});
-
 export { userRouter };

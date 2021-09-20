@@ -44,30 +44,4 @@ cartRouter.get("/get-cart", async (request, response) => {
   response.json(showCart);
 });
 
-// cartRouter.patch("/remove-cart", async (request, response) => {
-//   let { userId, items, total, qty } = request.body;
-
-//   const newCart = {};
-//   newCart.total_quantity = qty;
-//   newCart.total_price = total;
-//   newCart.items = [];
-
-//   items.forEach((item) => {
-//     newCart.items.push(item);
-//   });
-
-//   console.log(items);
-
-//   try {
-//     items = await User.findByIdAndUpdate(userId, {
-//       cart: newCart,
-//     });
-
-//     console.log(items);
-//     response.status(200).json("Cart Saved Successfully");
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
-
 export { cartRouter };
