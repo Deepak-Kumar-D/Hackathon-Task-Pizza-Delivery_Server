@@ -9,6 +9,7 @@ import { productRouter } from "./routes/productRouter.js";
 import { cartRouter } from "./routes/cartRouter.js";
 import { checkoutRouter } from "./routes/checkoutRouter.js";
 import dotenv from "dotenv";
+import { passRouter } from "./routes/forgotPassword.js";
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.use("/", orderRouter);
 app.use("/", productRouter);
 app.use("/", cartRouter);
 app.use("/", checkoutRouter);
+app.use("/", passRouter);
 
 app.listen(PORT, () => {
   console.log("The server is started in PORT " + PORT + "...");

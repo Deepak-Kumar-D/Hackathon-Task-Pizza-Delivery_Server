@@ -12,6 +12,7 @@
   "author": "Deepak",
   "license": "ISC",
   "dependencies": {
+    "@hookform/resolvers": "^2.8.1",
     "bcrypt": "^5.0.1",
     "ckey": "^1.0.2",
     "cookie-parser": "^1.4.5",
@@ -21,7 +22,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.2",
     "nodemailer": "^6.6.3",
-    "razorpay": "^2.0.6"
+    "razorpay": "^2.0.6",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "nodemon": "^2.0.9"
