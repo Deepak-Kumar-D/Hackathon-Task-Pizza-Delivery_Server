@@ -29,6 +29,13 @@ const orderSchema = new mongoose.Schema({
           default: 1,
           required: true,
         },
+        extras: {
+          base: { type: String, default: "default", required: true },
+          sauce: { type: String, default: "default", required: true },
+          cheese: { type: String, default: "default", required: true },
+          veggies: [{ type: String, default: "default", required: true }],
+          meat: [{ type: String, default: "No meat", required: true }],
+        },
       },
     ],
   },

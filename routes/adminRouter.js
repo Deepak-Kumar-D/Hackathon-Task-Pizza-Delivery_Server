@@ -143,12 +143,4 @@ adminRouter.get("/admin-dashboard", async (request, response) => {
   }
 });
 
-//Logout
-adminRouter.get("/admin-logout", async (request, response) => {
-  //   const isToken = request.cookies.jwtadmintoken;
-  //   await Token.findOneAndRemove({ token: isToken });
-  //   response.clearCookie("jwtadmintoken", { path: "token" });
-  //   response.status(200).json("Admin logged out!");
-});
-
 export { adminRouter };

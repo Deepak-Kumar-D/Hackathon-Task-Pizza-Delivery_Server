@@ -1,15 +1,20 @@
 import express from "express";
 import mongoose from "mongoose";
-import { userRouter } from "./routes/userRouter.js";
-import { adminRouter } from "./routes/adminRouter.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+import { userRouter } from "./routes/userRouter.js";
+import { adminRouter } from "./routes/adminRouter.js";
 import { orderRouter } from "./routes/orderRouter.js";
 import { productRouter } from "./routes/productRouter.js";
 import { cartRouter } from "./routes/cartRouter.js";
 import { checkoutRouter } from "./routes/checkoutRouter.js";
-import dotenv from "dotenv";
 import { passRouter } from "./routes/forgotPassword.js";
+import { baseRouter } from "./routes/baseRouter.js";
+import { cheeseRouter } from "./routes/cheeseRouter.js";
+import { veggiesRouter } from "./routes/veggiesRouter.js";
+import { sauceRouter } from "./routes/sauceRouter.js";
+import { meatRouter } from "./routes/meatRouter.js";
 
 dotenv.config();
 
@@ -42,6 +47,11 @@ app.use("/", productRouter);
 app.use("/", cartRouter);
 app.use("/", checkoutRouter);
 app.use("/", passRouter);
+app.use("/", baseRouter);
+app.use("/", cheeseRouter);
+app.use("/", veggiesRouter);
+app.use("/", sauceRouter);
+app.use("/", meatRouter);
 
 app.listen(PORT, () => {
   console.log("The server is started in PORT " + PORT + "...");

@@ -1,32 +1,13 @@
 import express from "express";
-import { Product } from "../models/product.js";
+import { Sauce } from "../models/sauce.js";
 import { Admin } from "../models/admin.js";
 import { User } from "../models/users.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
-const productRouter = express.Router();
+const sauceRouter = express.Router();
 
-productRouter.get("/products", async (request, response) => {
-  const token = request.headers["x-access-token"];
-
-  const decode = jwt.verify(token, process.env.SECRET_KEY);
-  const id = decode._id;
-
-  const admin = await Admin.findOne({ _id: id });
-
-  if (admin) {
-    const products = await Product.find();
-
-    if (products.length === 0) {
-      response.status(200).json("Stock is empty.");
-    } else {
-      response.status(200).json({ products: products, admin: admin });
-    }
-  }
-});
-
-productRouter.get("/user-products", async (request, response) => {
+sauceRouter.get("/sauce", async (request, response) => {
   const token = request.headers["x-access-token"];
 
   const decode = jwt.verify(token, process.env.SECRET_KEY);
@@ -35,41 +16,45 @@ productRouter.get("/user-products", async (request, response) => {
   const user = await User.findOne({ _id: id });
 
   if (user) {
-    const products = await Product.find();
+    const sauce = await Sauce.find();
 
-    if (products.length === 0) {
+    if (sauce.length === 0) {
       response.status(200).json("Stock is empty.");
     } else {
-      response.status(200).json({ products: products });
+      response.status(200).json({ sauce: sauce, user: user });
     }
   }
 });
 
-// productRouter.post("/add-products", async (request, response) => {
-//   const { name, src, price, quantity } = request.body;
+sauceRouter.get("/user-sauces", async (request, response) => {
+  const token = request.headers["x-access-token"];
 
-//   const product = await Product.findOne({ name: name });
+  const decode = jwt.verify(token, process.env.SECRET_KEY);
+  const id = decode._id;
 
-//   if (product) {
-//     return response.status(400).json("Product already exists.");
-//   }
-// else{const newProduct = new Product({ name, src, price, quantity });
-//   newProduct.save();
+  const user = await User.findOne({ _id: id });
 
-//   response.status(200).json("Product added successfully.")}
-//
-// });
+  if (user) {
+    const sauces = await Sauce.find();
 
-productRouter.post("/remove-quantity", async (request, response) => {
+    if (sauces.length === 0) {
+      response.status(200).json("Stock is empty.");
+    } else {
+      response.status(200).json({ sauces: sauces });
+    }
+  }
+});
+
+sauceRouter.post("/remove-sauceQty", async (request, response) => {
   const { items } = request.body;
 
   {
     items.forEach(async (ele) => {
-      const product = await Product.findOne({ _id: ele.productId });
-      product.quantity = product.quantity - ele.quantity;
-      await product.save();
+      const sauce = await Sauce.findOne({ name: ele.extras.sauce });
+      sauce.quantity = sauce.quantity - 1;
+      await sauce.save();
 
-      if (product.quantity < 10) {
+      if (sauce.quantity < 10) {
         const sendMail = () => {
           let Transport = nodemailer.createTransport({
             service: "Gmail",
@@ -84,7 +69,7 @@ productRouter.post("/remove-quantity", async (request, response) => {
             to: { name: "Automated", address: process.env.MAIL_USERNAME },
             subject: "Stock Update",
             html: `<p>Dear Admin,</p>\n
-            <h3>The stock for ${product.name} is very low. Please update the stocks.</h3>\n
+            <h3>The stock for ${sauce.name} is very low. Please update the stocks.</h3>\n
             <p>Regards,</p>\n
             <p>Pizza Town</p>\n
             <p>India</p>`,
@@ -103,17 +88,32 @@ productRouter.post("/remove-quantity", async (request, response) => {
       }
     });
   }
-  response.json("Product list updated.");
+  response.json("Sauce list updated.");
 });
 
-productRouter.post("/add-quantity", async (request, response) => {
+sauceRouter.post("/add-sauceQty", async (request, response) => {
   const { id, qty } = request.body;
 
-  const product = await Product.findOne({ _id: id });
-  product.quantity = qty;
-  await product.save();
+  const sauce = await Sauce.findOne({ _id: id });
+  sauce.quantity = qty;
+  await sauce.save();
 
   response.json("Stock updated!");
 });
 
-export { productRouter };
+sauceRouter.post("/add-sauce", async (request, response) => {
+  const { name, quantity } = request.body;
+
+  const sauce = await Sauce.findOne({ name: name });
+
+  if (sauce) {
+    return response.status(400).json("Sauce already exists.");
+  } else {
+    const newSauce = new Sauce({ name, quantity });
+    newSauce.save();
+
+    response.status(200).json("Sauce added successfully.");
+  }
+});
+
+export { sauceRouter };

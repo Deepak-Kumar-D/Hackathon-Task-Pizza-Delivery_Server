@@ -1,32 +1,13 @@
 import express from "express";
-import { Product } from "../models/product.js";
+import { Cheese } from "../models/cheese.js";
 import { Admin } from "../models/admin.js";
 import { User } from "../models/users.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
-const productRouter = express.Router();
+const cheeseRouter = express.Router();
 
-productRouter.get("/products", async (request, response) => {
-  const token = request.headers["x-access-token"];
-
-  const decode = jwt.verify(token, process.env.SECRET_KEY);
-  const id = decode._id;
-
-  const admin = await Admin.findOne({ _id: id });
-
-  if (admin) {
-    const products = await Product.find();
-
-    if (products.length === 0) {
-      response.status(200).json("Stock is empty.");
-    } else {
-      response.status(200).json({ products: products, admin: admin });
-    }
-  }
-});
-
-productRouter.get("/user-products", async (request, response) => {
+cheeseRouter.get("/cheese", async (request, response) => {
   const token = request.headers["x-access-token"];
 
   const decode = jwt.verify(token, process.env.SECRET_KEY);
@@ -35,41 +16,45 @@ productRouter.get("/user-products", async (request, response) => {
   const user = await User.findOne({ _id: id });
 
   if (user) {
-    const products = await Product.find();
+    const cheese = await Cheese.find();
 
-    if (products.length === 0) {
+    if (cheese.length === 0) {
       response.status(200).json("Stock is empty.");
     } else {
-      response.status(200).json({ products: products });
+      response.status(200).json({ cheese: cheese, user: user });
     }
   }
 });
 
-// productRouter.post("/add-products", async (request, response) => {
-//   const { name, src, price, quantity } = request.body;
+cheeseRouter.get("/user-cheese", async (request, response) => {
+  const token = request.headers["x-access-token"];
 
-//   const product = await Product.findOne({ name: name });
+  const decode = jwt.verify(token, process.env.SECRET_KEY);
+  const id = decode._id;
 
-//   if (product) {
-//     return response.status(400).json("Product already exists.");
-//   }
-// else{const newProduct = new Product({ name, src, price, quantity });
-//   newProduct.save();
+  const user = await User.findOne({ _id: id });
 
-//   response.status(200).json("Product added successfully.")}
-//
-// });
+  if (user) {
+    const cheese = await Cheese.find();
 
-productRouter.post("/remove-quantity", async (request, response) => {
+    if (cheese.length === 0) {
+      response.status(200).json("Stock is empty.");
+    } else {
+      response.status(200).json({ cheese: cheese });
+    }
+  }
+});
+
+cheeseRouter.post("/remove-cheeseQty", async (request, response) => {
   const { items } = request.body;
 
   {
     items.forEach(async (ele) => {
-      const product = await Product.findOne({ _id: ele.productId });
-      product.quantity = product.quantity - ele.quantity;
-      await product.save();
+      const cheese = await Cheese.findOne({ name: ele.extras.cheese });
+      cheese.quantity = cheese.quantity - 1;
+      await cheese.save();
 
-      if (product.quantity < 10) {
+      if (cheese.quantity < 10) {
         const sendMail = () => {
           let Transport = nodemailer.createTransport({
             service: "Gmail",
@@ -84,7 +69,7 @@ productRouter.post("/remove-quantity", async (request, response) => {
             to: { name: "Automated", address: process.env.MAIL_USERNAME },
             subject: "Stock Update",
             html: `<p>Dear Admin,</p>\n
-            <h3>The stock for ${product.name} is very low. Please update the stocks.</h3>\n
+            <h3>The stock for ${cheese.name} is very low. Please update the stocks.</h3>\n
             <p>Regards,</p>\n
             <p>Pizza Town</p>\n
             <p>India</p>`,
@@ -103,17 +88,32 @@ productRouter.post("/remove-quantity", async (request, response) => {
       }
     });
   }
-  response.json("Product list updated.");
+  response.json("Cheese list updated.");
 });
 
-productRouter.post("/add-quantity", async (request, response) => {
+cheeseRouter.post("/add-cheeseQty", async (request, response) => {
   const { id, qty } = request.body;
 
-  const product = await Product.findOne({ _id: id });
-  product.quantity = qty;
-  await product.save();
+  const cheese = await Cheese.findOne({ _id: id });
+  cheese.quantity = qty;
+  await cheese.save();
 
   response.json("Stock updated!");
 });
 
-export { productRouter };
+cheeseRouter.post("/add-cheese", async (request, response) => {
+  const { name, quantity } = request.body;
+
+  const cheese = await Cheese.findOne({ name: name });
+
+  if (cheese) {
+    return response.status(400).json("Cheese already exists.");
+  } else {
+    const newCheese = new Cheese({ name, quantity });
+    newCheese.save();
+
+    response.status(200).json("Cheese added successfully.");
+  }
+});
+
+export { cheeseRouter };
