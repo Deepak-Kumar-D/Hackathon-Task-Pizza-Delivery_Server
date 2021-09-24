@@ -46,7 +46,7 @@ passRouter.post("/forgot-password", async (request, response) => {
         to: { name: ele.name + " " + ele.name, address: email },
         subject: "Password Reset",
         html: `<p>Dear ${ele.name},</p>\n
-          <h3>Click <a href="http://localhost:3000/reset-password/${token}">here</a> to reset your account password.</h3>\n
+          <h3>Click <a href="https://pizza-town.netlify.app/reset-password/${token}">here</a> to reset your account password.</h3>\n
           <p style="margin: 0;">Regards,</p>\n
           <p style="margin: 0;">Pizza Town</p>\n
           <p style="margin: 0;">India</p>\n`,

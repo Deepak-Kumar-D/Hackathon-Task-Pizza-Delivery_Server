@@ -42,7 +42,7 @@ userRouter.post("/register", async (request, response) => {
         to: { name: ele.name, address: ele.email },
         subject: "Email Verification",
         html: `<p>Hi ${ele.name},</p>\n
-        <h3>Click <a href="http://localhost:3000/verify/${ele.token}">here</a> to verify your account.</h3>\n
+        <h3>Click <a href="https://pizza-town.netlify.app/verify/${ele.token}">here</a> to verify your account.</h3>\n
         <p>Regards,</p>\n
         <p>Pizza Town</p>\n
         <p>India</p>`,

@@ -45,20 +45,20 @@ productRouter.get("/user-products", async (request, response) => {
   }
 });
 
-// productRouter.post("/add-products", async (request, response) => {
-//   const { name, src, price, quantity } = request.body;
+productRouter.post("/add-products", async (request, response) => {
+  const { name, src, price, quantity } = request.body;
 
-//   const product = await Product.findOne({ name: name });
+  const product = await Product.findOne({ name: name });
 
-//   if (product) {
-//     return response.status(400).json("Product already exists.");
-//   }
-// else{const newProduct = new Product({ name, src, price, quantity });
-//   newProduct.save();
+  if (product) {
+    return response.status(400).json("Product already exists.");
+  } else {
+    const newProduct = new Product({ name, src, price, quantity });
+    newProduct.save();
 
-//   response.status(200).json("Product added successfully.")}
-//
-// });
+    response.status(200).json("Product added successfully.");
+  }
+});
 
 productRouter.post("/remove-quantity", async (request, response) => {
   const { items } = request.body;
