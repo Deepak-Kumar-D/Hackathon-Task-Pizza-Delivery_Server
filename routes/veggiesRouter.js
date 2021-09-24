@@ -26,6 +26,25 @@ veggiesRouter.get("/veggies", async (request, response) => {
   }
 });
 
+veggiesRouter.get("/admin-veggies", async (request, response) => {
+  const token = request.headers["x-access-token"];
+
+  const decode = jwt.verify(token, process.env.SECRET_KEY);
+  const id = decode._id;
+
+  const admin = await Admin.findOne({ _id: id });
+
+  if (admin) {
+    const veggies = await Veggies.find();
+
+    if (veggies.length === 0) {
+      response.status(200).json("Stock is empty.");
+    } else {
+      response.status(200).json({ veggies: veggies, admin: admin });
+    }
+  }
+});
+
 veggiesRouter.get("/user-veggies", async (request, response) => {
   const token = request.headers["x-access-token"];
 

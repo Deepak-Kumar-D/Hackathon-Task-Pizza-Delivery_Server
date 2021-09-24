@@ -26,6 +26,25 @@ cheeseRouter.get("/cheese", async (request, response) => {
   }
 });
 
+cheeseRouter.get("/admin-cheese", async (request, response) => {
+  const token = request.headers["x-access-token"];
+
+  const decode = jwt.verify(token, process.env.SECRET_KEY);
+  const id = decode._id;
+
+  const admin = await Admin.findOne({ _id: id });
+
+  if (admin) {
+    const cheese = await Cheese.find();
+
+    if (cheese.length === 0) {
+      response.status(200).json("Stock is empty.");
+    } else {
+      response.status(200).json({ cheese: cheese, admin: admin });
+    }
+  }
+});
+
 cheeseRouter.get("/user-cheese", async (request, response) => {
   const token = request.headers["x-access-token"];
 

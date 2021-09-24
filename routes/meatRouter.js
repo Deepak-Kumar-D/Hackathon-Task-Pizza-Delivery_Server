@@ -26,6 +26,25 @@ meatRouter.get("/meat", async (request, response) => {
   }
 });
 
+meatRouter.get("/admin-meat", async (request, response) => {
+  const token = request.headers["x-access-token"];
+
+  const decode = jwt.verify(token, process.env.SECRET_KEY);
+  const id = decode._id;
+
+  const admin = await Admin.findOne({ _id: id });
+
+  if (admin) {
+    const meat = await Meat.find();
+
+    if (meat.length === 0) {
+      response.status(200).json("Stock is empty.");
+    } else {
+      response.status(200).json({ meat: meat, admin: admin });
+    }
+  }
+});
+
 meatRouter.get("/user-meats", async (request, response) => {
   const token = request.headers["x-access-token"];
 

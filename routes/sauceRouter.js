@@ -26,6 +26,25 @@ sauceRouter.get("/sauce", async (request, response) => {
   }
 });
 
+sauceRouter.get("/admin-sauce", async (request, response) => {
+  const token = request.headers["x-access-token"];
+
+  const decode = jwt.verify(token, process.env.SECRET_KEY);
+  const id = decode._id;
+
+  const admin = await Admin.findOne({ _id: id });
+
+  if (admin) {
+    const sauce = await Sauce.find();
+
+    if (sauce.length === 0) {
+      response.status(200).json("Stock is empty.");
+    } else {
+      response.status(200).json({ sauce: sauce, admin: admin });
+    }
+  }
+});
+
 sauceRouter.get("/user-sauces", async (request, response) => {
   const token = request.headers["x-access-token"];
 

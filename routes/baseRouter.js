@@ -26,6 +26,25 @@ baseRouter.get("/base", async (request, response) => {
   }
 });
 
+baseRouter.get("/admin-base", async (request, response) => {
+  const token = request.headers["x-access-token"];
+
+  const decode = jwt.verify(token, process.env.SECRET_KEY);
+  const id = decode._id;
+
+  const admin = await Admin.findOne({ _id: id });
+
+  if (admin) {
+    const base = await Base.find();
+
+    if (base.length === 0) {
+      response.status(200).json("Stock is empty.");
+    } else {
+      response.status(200).json({ base: base, admin: admin });
+    }
+  }
+});
+
 baseRouter.get("/user-baseQty", async (request, response) => {
   const token = request.headers["x-access-token"];
 
